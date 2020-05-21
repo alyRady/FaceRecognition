@@ -1,5 +1,6 @@
 const video = document.getElementById('video')
 var a=0
+var c =''
 
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
@@ -31,8 +32,20 @@ video.addEventListener('play',async () => {
     const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
     results.forEach((result, i) => {
       const box = resizedDetections[i].detection.box
-      const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() })
-      drawBox.draw(canvas)
+      if(result.toString().includes('Ali')){
+        a=1
+      }
+      else{
+        a=0
+      }
+      if (a===1){
+        const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString()+' Quel BG!!! ' })
+        drawBox.draw(canvas)
+      }
+      if (a===0){
+        const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString()+' Tu es vraiement moche! ' })
+        drawBox.draw(canvas)
+      }
     })
     //faceapi.draw.drawDetections(canvas, resizedDetections, { label: 'Face' })
     //faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
@@ -41,7 +54,7 @@ video.addEventListener('play',async () => {
 })
 
 function loadLabeledImages(){
-  const labels = ['Ali','Moha']
+  const labels = ['Ali','Moha','Alaa']
   return Promise.all(
     labels.map(async label =>{
       const descriptions = []
@@ -49,16 +62,6 @@ function loadLabeledImages(){
         const img = await faceapi.fetchImage(`./labeled_images/${label}/${i}.jpg`)
         const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
         descriptions.push(detections.descriptor)
-
-      }
-      if(label.includes('Ali')){
-        a=1
-      }
-      if(a===1){
-        document.body.append('Quel BG!!! ')
-      }
-      if(a===0){
-        document.body.append('Tu es vraiement moche! ')
       }
       return new faceapi.LabeledFaceDescriptors(label, descriptions)
       
