@@ -1,4 +1,5 @@
 const video = document.getElementById('video')
+var a=0
 
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
@@ -8,17 +9,17 @@ Promise.all([
   faceapi.nets.ssdMobilenetv1.loadFromUri('./models')
 ]).then(startVideo)
 
- async function startVideo() {
+ function startVideo() {
   navigator.getUserMedia(
     { video: {} },
     stream => video.srcObject = stream,
     err => console.error(err)
-  )
-  const labeledFaceDescriptors = await loadLabeledImages()
-  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
-  document.body.append('Loaded')
+  )}
+  
 
 video.addEventListener('play',async () => {
+  const labeledFaceDescriptors = await loadLabeledImages()
+  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
   const canvas = faceapi.createCanvasFromMedia(video)
   document.body.append(canvas)
   const displaySize = { width: video.width, height: video.height }
@@ -32,14 +33,12 @@ video.addEventListener('play',async () => {
       const box = resizedDetections[i].detection.box
       const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() })
       drawBox.draw(canvas)
-      document.body.append('1')
     })
     //faceapi.draw.drawDetections(canvas, resizedDetections, { label: 'Face' })
     //faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
     //faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
   }, 100)
 })
-}
 
 function loadLabeledImages(){
   const labels = ['Ali','Moha']
@@ -52,7 +51,17 @@ function loadLabeledImages(){
         descriptions.push(detections.descriptor)
 
       }
+      if(label.includes('Ali')){
+        a=1
+      }
+      if(a===1){
+        document.body.append('Quel BG!!! ')
+      }
+      if(a===0){
+        document.body.append('Tu es vraiement moche! ')
+      }
       return new faceapi.LabeledFaceDescriptors(label, descriptions)
+      
     })
   )
 }
