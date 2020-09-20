@@ -43,7 +43,7 @@ video.addEventListener('play',async () => {
         drawBox.draw(canvas)
       }
       if (a===0){
-        const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString()+' Tu es vraiement moche! ' })
+        const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString()+' T\'es qui toi ? ' })
         drawBox.draw(canvas)
       }
     })
@@ -54,7 +54,7 @@ video.addEventListener('play',async () => {
 })
 
 function loadLabeledImages(){
-  const labels = ['Ali','Moha','Alaa']
+  const labels = ['Ali']
   return Promise.all(
     labels.map(async label =>{
       const descriptions = []
